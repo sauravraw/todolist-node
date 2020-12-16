@@ -1,4 +1,4 @@
-# todolis-node
+# todolist-node
 
 # clone project
 https://github.com/sauravraw/todolist-node.git

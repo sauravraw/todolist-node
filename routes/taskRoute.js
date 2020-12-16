@@ -11,7 +11,7 @@ const {
 router.route("/tasks").get(getTasks).post(addTasks);
 
 router
-	.route("/tasks/:taskId")
+	.route("/tasks/:id/:name/:status")
 	.get(getTaskById)
 	.put(updateTasks)
 	.delete(deleteTaskById);

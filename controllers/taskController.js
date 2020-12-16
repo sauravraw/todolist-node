@@ -1,13 +1,27 @@
 const mongoose = require("mongoose");
 const Task = require("../models/taskSchema.js");
 const sendResponse = require("../helpers/sendResponse.js");
-const sendErrorMessage = require("../helpers/sendError");
 const AppError = require("../helpers/appError.js");
 const sendError = require("../helpers/sendError");
 
 const getTasks = async (req, res) => {
-	const allTasks = await Task.find();
-	sendResponse(200, "Success", allTasks, req, res);
+	if (req.query) {
+		let findTask = await Task.find(req.query);
+		if (findTask < 1) {
+			sendError(
+				404,
+				"Unsuccessful",
+				"Task not found try with another query",
+				req,
+				res
+			);
+		} else {
+			sendResponse(200, "Successful", findTask, req, res);
+		}
+	} else {
+		const allTasks = await Task.find();
+		sendResponse(200, "Successful", allTasks, req, res);
+	}
 };
 
 const addTasks = async (req, res) => {
@@ -28,10 +42,10 @@ const addTasks = async (req, res) => {
 	}
 };
 const getTaskById = async (req, res) => {
-	const { taskId } = req.params;
+	const { id } = req.params;
 
 	try {
-		let task = await Task.find({ taskId });
+		let task = await Task.find({ taskId: id });
 		sendResponse(200, "Successfull", task, req, res);
 	} catch (err) {
 		sendError(
@@ -43,8 +57,10 @@ const getTaskById = async (req, res) => {
 		);
 	}
 };
+
+const getTaskByQuery = async (req, res) => {};
 const updateTasks = async (req, res) => {
-	const { taskId } = req.params;
+	const { id } = req.params;
 
 	const re = /<("[^"]?"|'[^']?'|[^'">])*>/;
 
@@ -53,7 +69,7 @@ const updateTasks = async (req, res) => {
 	} else {
 		try {
 			let task = await Task.updateOne(
-				{ taskId: taskId },
+				{ taskId: id },
 				{ $set: { taskName: req.body.taskName } }
 			);
 			sendResponse(200, "Success", task, req, res);
@@ -64,10 +80,10 @@ const updateTasks = async (req, res) => {
 };
 
 const deleteTaskById = async (req, res) => {
-	const { taskId } = req.params;
+	const { id } = req.params;
 
 	try {
-		let deletedTask = await Task.deleteOne({ taskId });
+		let deletedTask = await Task.deleteOne({ taskId: id });
 		sendResponse(200, "Task Deleted", deletedTask, req, res);
 	} catch (err) {
 		sendError(

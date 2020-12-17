@@ -58,7 +58,6 @@ const getTaskById = async (req, res) => {
 	}
 };
 
-const getTaskByQuery = async (req, res) => {};
 const updateTasks = async (req, res) => {
 	const { id } = req.params;
 
@@ -70,7 +69,8 @@ const updateTasks = async (req, res) => {
 		try {
 			let task = await Task.updateOne(
 				{ taskId: id },
-				{ $set: { taskName: req.body.taskName } }
+				{ $set: { taskName: req.body.taskName } },
+				{ runValidators: true }
 			);
 			sendResponse(200, "Success", task, req, res);
 		} catch (err) {
@@ -80,11 +80,9 @@ const updateTasks = async (req, res) => {
 };
 
 const deleteTaskById = async (req, res) => {
-	const { id } = req.params;
-
 	try {
 		let deletedTask = await Task.deleteOne({ taskId: id });
-		sendResponse(200, "Task Deleted", deletedTask, req, res);
+		sendResponse(200, "Task Deleted Successfully", deletedTask, req, res);
 	} catch (err) {
 		sendError(
 			400,
@@ -95,10 +93,26 @@ const deleteTaskById = async (req, res) => {
 		);
 	}
 };
+
+const deleteByQuery = async (req, res) => {
+	if (req.query) {
+		let deletedTask = await Task.deleteMany(req.query);
+		sendResponse(
+			200,
+			"Task Deleted Successfully by Query Parameter",
+			deletedTask,
+			req,
+			res
+		);
+	} else {
+		sendError(404, "Unsuccessful", "Task cannot be deleted", req, res);
+	}
+};
 module.exports = {
 	getTasks,
 	addTasks,
 	updateTasks,
 	getTaskById,
 	deleteTaskById,
+	deleteByQuery,
 };

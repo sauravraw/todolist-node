@@ -34,6 +34,9 @@ open body in postman select raw (radio-button) and json (dropdown)
 [{
 taskName:" of your choice"
 }]
+9. YOu can deleteby passing query parameters 
+to delete task select **delete** from drop down and type http://localhost:3000/todo/tasks/(id)
+eg: http://localhost:3000/todo/tasks?taskName=sleep
 
 
 # Open mongo compass
@@ -44,4 +47,6 @@ open mongo composs
 press connect
 
 # technology used
-node Js mongo javaScript
+nodeJS
+mongoDB
+JavaScript
